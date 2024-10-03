@@ -1,14 +1,19 @@
 import { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
 import './index.css';
 import Arrow from './icons/Arrow';
 import { bear, coin, highVoltage, notcoin, rocket, trophy } from './images';
 
 const App = () => {
-  const [points, setPoints] = useState(29857775);
-  const [energy, setEnergy] = useState(2532);
+  // Get initial values from cookies or set default values
+  const initialPoints = Number(Cookies.get('points')) || 0;
+  const initialEnergy = Number(Cookies.get('energy')) || 3000;
+
+  const [points, setPoints] = useState(initialPoints);
+  const [energy, setEnergy] = useState(initialEnergy);
   const [clicks, setClicks] = useState<{ id: number, x: number, y: number }[]>([]);
-  const pointsToAdd = 12;
-  const energyToReduce = 12;
+  const pointsToAdd = 10;
+  const energyToReduce = 10;
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (energy - energyToReduce < 0) {
@@ -18,9 +23,16 @@ const App = () => {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    setPoints(points + pointsToAdd);
-    setEnergy(energy - energyToReduce < 0 ? 0 : energy - energyToReduce);
+    const newPoints = points + pointsToAdd;
+    const newEnergy = energy - energyToReduce;
+
+    setPoints(newPoints);
+    setEnergy(newEnergy < 0 ? 0 : newEnergy);
     setClicks([...clicks, { id: Date.now(), x, y }]);
+
+    // Update cookies
+    Cookies.set('points', newPoints.toString());
+    Cookies.set('energy', newEnergy.toString());
   };
 
   const handleAnimationEnd = (id: number) => {
@@ -30,7 +42,11 @@ const App = () => {
   // useEffect hook to restore energy over time
   useEffect(() => {
     const interval = setInterval(() => {
-      setEnergy((prevEnergy) => Math.min(prevEnergy + 1, 6500));
+      setEnergy((prevEnergy) => {
+        const newEnergy = Math.min(prevEnergy + 1, 6500);
+        Cookies.set('energy', newEnergy.toString());
+        return newEnergy;
+      });
     }, 100); // Restore 10 energy points every second
 
     return () => clearInterval(interval); // Clear interval on component unmount
