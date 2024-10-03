@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import './index.css';
 import Arrow from './icons/Arrow';
-import { bear, coin, highVoltage, notcoin, rocket, trophy } from './images';
+import { bear, coin, highVoltage, bat, rocket, trophy } from './images';
 
 const App = () => {
   // Get initial values from cookies or set default values
@@ -63,11 +63,7 @@ const App = () => {
       <div className="w-full z-10 min-h-screen flex flex-col items-center text-white">
 
         <div className="fixed top-0 left-0 w-full px-4 pt-8 z-10 flex flex-col items-center text-white">
-          <div className="w-full cursor-pointer">
-            <div className="bg-[#1f1f1f] text-center py-2 rounded-xl">
-              <p className="text-lg">Join squad <Arrow size={18} className="ml-0 mb-1 inline-block" /></p>
-            </div>
-          </div>
+
           <div className="mt-12 text-5xl font-bold flex items-center">
             <img src={coin} width={44} height={44} />
             <span className="ml-2">{points.toLocaleString()}</span>
